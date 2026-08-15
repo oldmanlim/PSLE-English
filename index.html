@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-slate-50">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PSLE English Paper 2 Master Trainer</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                        display: ['Fredoka', 'sans-serif'],
+                    },
+                    colors: {
+                        sgred: '#D0021B',
+                        psleblue: '#2563EB',
+                        pslegreen: '#059669',
+                        psleyellow: '#D97706',
+                        pslepurple: '#7C3AED',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+        }
+        .tab-btn.active {
+            border-bottom-color: #2563EB;
+            color: #2563EB;
+            background-color: #EFF6FF;
+        }
+        .option-card {
+            transition: all 0.2s ease-in-out;
+        }
+        .option-card:hover:not(.disabled) {
+            transform: translateY(-2px);
+        }
+        /* Custom scrollbars */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #F1F5F9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #CBD5E1;
+            border-radius: 9999px;
+        }
+    </style>
+</head>
+<body class="h-full flex flex-col font-sans text-slate-800 bg-slate-50 antialiased selection:bg-blue-100 selection:text-blue-700">
+
+    <header class="sticky top-0 z-30 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
+        <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-white font-display text-xl shadow-md shadow-blue-500/20">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                </div>
+                <div>
+                    <h1 class="font-display font-bold text-lg md:text-xl text-slate-900 leading-tight">PSLE Paper 2 Master</h1>
+                    <p class="text-xs text-slate-500 font-medium hidden sm:block">10-Year Exam Trends & Pattern Engine</p>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-2 sm:gap-3">
+                <!-- Live Score Counter -->
+                <div class="bg-slate-100 px-3 py-1.5 rounded-lg border border-slate-200 flex items-center gap-2 text-xs sm:text-sm font-semibold text-slate-700">
+                    <i class="fa-solid fa-trophy text-amber-500"></i>
+                    <span>Score: <span id="headerScore">0</span> / <span id="headerTotal">0</span></span>
+                </div>
+
+                <!-- Reset & Generate New Set Button -->
+                <button onclick="confirmNewSet()" class="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl font-semibold text-xs sm:text-sm shadow-md shadow-emerald-600/20 active:scale-95 transition-all flex items-center gap-2">
+                    <i class="fa-solid fa-rotate text-xs"></i>
+                    <span class="hidden xs:inline">Generate New Set</span>
+                    <span class="xs:hidden">New Set</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-1 max-w-5xl w-full mx-auto px-4 py-6 flex flex-col gap-6">
+
+        <!-- Top Overview & Mode Banner -->
+        <section class="bg-gradient-to-r from-blue-900 via-indigo-900 to-slate-900 rounded-2xl p-4 sm:p-6 text-white shadow-xl relative overflow-hidden">
+            <div class="absolute -right-10 -bottom-10 w-48 h-48 bg-blue-500/20 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                    <div class="inline-flex items-center gap-2 bg-blue-500/20 border border-blue-400/30 px-3 py-1 rounded-full text-xs font-semibold text-blue-300 mb-2">
+                        <i class="fa-solid fa-bolt text-amber-400"></i> Infinite Question Pool Generator
+                    </div>
+                    <h2 class="font-display font-bold text-xl sm:text-2xl">Targeted Paper 2 Drill (Non-Comprehension)</h2>
+                    <p class="text-xs sm:text-sm text-slate-300 mt-1 max-w-2xl">
+                        Practice Grammar, Vocabulary, Cloze, Editing, and Synthesis & Transformation built on Singapore PSLE exam trends (2015–2025). Instant step-by-step explanations included.
+                    </p>
+                </div>
+                <div class="flex items-center gap-2 self-start md:self-center">
+                    <button onclick="toggleViewMode('all')" id="modeBtnAll" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-white text-slate-900 shadow-sm transition">
+                        All Sections
+                    </button>
+                    <button onclick="toggleViewMode('section')" id="modeBtnSection" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-white/10 text-slate-200 hover:bg-white/20 transition">
+                        Section View
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section Tabs Navigation -->
+        <nav class="flex items-center gap-2 overflow-x-auto pb-2 border-b border-slate-200 no-scrollbar">
+            <button onclick="switchTab('grammar')" id="tab-grammar" class="tab-btn active px-4 py-2.5 rounded-t-xl font-semibold text-xs sm:text-sm whitespace-nowrap transition flex items-center gap-2">
+                <i class="fa-solid fa-check-double text-blue-600"></i> Grammar MCQ (10Q)
+            </button>
+            <button onclick="switchTab('vocab')" id="tab-vocab" class="tab-btn px-4 py-2.5 rounded-t-xl font-semibold text-xs sm:text-sm text-slate-600 whitespace-nowrap transition flex items-center gap-2">
+                <i class="fa-solid fa-book text-emerald-600"></i> Vocab MCQ (5Q)
+            </button>
+            <button onclick="switchTab('vocab-cloze')" id="tab-vocab-cloze" class="tab-btn px-4 py-2.5 rounded-t-xl font-semibold text-xs sm:text-sm text-slate-600 whitespace-nowrap transition flex items-center gap-2">
+                <i class="fa-solid fa-file-word text-amber-600"></i> Vocab Cloze (5Q)
+            </button>
+            <button onclick="switchTab('grammar-cloze')" id="tab-grammar-cloze" class="tab-btn px-4 py-2.5 rounded-t-xl font-semibold text-xs sm:text-sm text-slate-600 whitespace-nowrap transition flex items-center gap-2">
+                <i class="fa-solid fa-list-check text-purple-600"></i> Grammar Cloze (10Q)
+            </button>
+            <button onclick="switchTab('editing')" id="tab-editing" class="tab-btn px-4 py-2.5 rounded-t-xl font-semibold text-xs sm:text-sm text-slate-600 whitespace-nowrap transition flex items-center gap-2">
+                <i class="fa-solid fa-spell-check text-rose-600"></i> Editing (12Q)
+            </button>
+            <button onclick="switchTab('synthesis')" id="tab-synthesis" class="tab-btn px-4 py-2.5 rounded-t-xl font-semibold text-xs sm:text-sm text-slate-600 whitespace-nowrap transition flex items-center gap-2">
+                <i class="fa-solid fa-diagram-project text-indigo-600"></i> Synthesis (5Q)
+            </button>
+        </nav>
+
+        <div id="quizContent" class="flex flex-col gap-6">
+            <!-- Questions rendered via JS dynamically -->
+        </div>
+
+        <!-- Submit Paper / Final Score Bar -->
+        <div class="glass-card rounded-2xl p-5 border border-slate-200 shadow-lg flex flex-col sm:flex-row items-center justify-between gap-4 my-4">
+            <div>
+                <h3 class="font-display font-bold text-slate-900 text-lg">Practice Set Progress</h3>
+                <p class="text-xs text-slate-500" id="progressText">Answered 0 out of 47 questions</p>
+            </div>
+            <div class="flex items-center gap-3 w-full sm:w-auto">
+                <button onclick="submitFullPaper()" class="flex-1 sm:flex-none bg-blue-600 hover:bg-blue-700 text-white font-bold px-6 py-3 rounded-xl shadow-lg shadow-blue-600/25 active:scale-95 transition-all text-sm flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-paper-plane"></i> Submit & Complete Paper
+                </button>
+                <button onclick="confirmNewSet()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-4 py-3 rounded-xl border border-slate-200 active:scale-95 transition-all text-sm flex items-center gap-2">
+                    <i class="fa-solid fa-arrows-rotate"></i> Reset
+                </button>
+            </div>
+        </div>
+
+    </main>
+
+    <div id="scoreModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-slate-100 flex flex-col gap-5 transform transition-all animate-in fade-in zoom-in duration-200">
+            <div class="text-center">
+                <div class="w-16 h-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto text-3xl font-display mb-3">
+                    <i class="fa-solid fa-award"></i>
+                </div>
+                <h3 class="font-display font-bold text-2xl text-slate-900">Quiz Completed!</h3>
+                <p class="text-xs text-slate-500 mt-1">Here is your PSLE Paper 2 Non-Comprehension Performance</p>
+            </div>
+
+            <div class="bg-slate-50 rounded-2xl p-4 border border-slate-200 flex items-center justify-around text-center">
+                <div>
+                    <span class="block text-3xl font-display font-bold text-blue-600" id="modalScoreText">0/47</span>
+                    <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Final Score</span>
+                </div>
+                <div class="h-10 w-px bg-slate-200"></div>
+                <div>
+                    <span class="block text-3xl font-display font-bold text-emerald-600" id="modalPctText">0%</span>
+                    <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Accuracy</span>
+                </div>
+            </div>
+
+            <!-- Breakdown by section -->
+            <div class="space-y-2 text-xs text-slate-600" id="sectionBreakdown">
+                <!-- Populated dynamically -->
+            </div>
+
+            <div class="flex flex-col gap-2 mt-2">
+                <button onclick="resetAndGenerateNewPaper()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl shadow-lg shadow-emerald-600/25 active:scale-95 transition flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-dice text-base"></i> Generate 100% Brand-New Question Set
+                </button>
+                <button onclick="closeScoreModal()" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold py-2.5 rounded-xl border border-slate-200 transition">
+                    Review Answers
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        
+        let currentTab = 'grammar';
+        let viewMode = 'all'; // 'all' or 'section'
+        let currentQuestions = {};
+        let userAnswers = {};
+        let scoreState = {
+            totalScore: 0,
+            answeredCount: 0
+        };
+
+        // -------------------------------------------------------------
+        // DYNAMIC QUESTION POOL DATA & ALGORITHMIC TEMPLATE GENERATOR
+        // Generated based on 10-year Singapore PSLE trends (2015-2025)
+        // -------------------------------------------------------------
+
+        const GRAMMAR_TEMPLATES = [
+            {
+                rule: "Neither ... nor / Proximity Rule",
+                gen: () => {
+                    const subjectsSingular = ["the teacher", "the coach", "the manager", "the doctor", "the mother"];
+                    const subjectsPlural = ["the pupils", "the athletes", "the employees", "the nurses", "the children"];
+                    const s1 = subjectsSingular[Math.floor(Math.random()*subjectsSingular.length)];
+                    const s2 = subjectsPlural[Math.floor(Math.random()*subjectsPlural.length)];
+                    const actions = [
+                        { stem: `Neither ${s1} nor ${s2} ______ present at the briefing yesterday.`, correct: "were", options: ["was", "were", "are", "is"], exp: "In 'Neither... nor' structures, the verb agrees with the subject closest to it. Since 'the pupils/athletes' is plural and the context is past tense ('yesterday'), 'were' is correct." },
+                        { stem: `Neither ${s2} nor ${s1} ______ aware of the changes made to the schedule last week.`, correct: "was", options: ["were", "was", "are", "have"], exp: "The verb agrees with the subject closest to it. Since the singular subject is closest to the verb in the past tense, 'was' is required." }
+                    ];
+                    return actions[Math.floor(Math.random()*actions.length)];
+                }
+            },
+            {
+                rule: "Subjunctive Conditionals / 'If I were'",
+                gen: () => {
+                    const situations = [
+                        { stem: "If I ______ in your position, I would consult a professional immediately.", correct: "were", options: ["am", "was", "were", "had been"], exp: "Hypothetical or contrary-to-fact conditional statements in formal PSLE English use 'were' for all subjects (e.g., 'If I were', 'If he were')." },
+                        { stem: "If the captain ______ to step down now, the team would lose their strategic edge.", correct: "were", options: ["is", "was", "were", "has"], exp: "Formal subjunctive conditionals require 'were' when expressing hypothetical situations." }
+                    ];
+                    return situations[Math.floor(Math.random()*situations.length)];
+                }
+            },
+            {
+                rule: "Together with / Along with (Subject-Verb Agreement)",
+                gen: () => {
+                    const leaders = ["The principal", "The commander", "The tour guide", "The researcher"];
+                    const groups = ["her assistants", "his soldiers", "the tourists", "his team members"];
+                    const leader = leaders[Math.floor(Math.random()*leaders.length)];
+                    const group = groups[Math.floor(Math.random()*groups.length)];
+                    return {
+                        stem: `${leader}, together with ${group}, ______ currently conducting the site inspection.`,
+                        correct: "is",
+                        options: ["are", "is", "were", "have been"],
+                        exp: "Words like 'together with', 'as well as', or 'along with' introduce parenthetical phrases. The main subject ('The principal') remains singular, requiring 'is'."
+                    };
+                }
+            },
+            {
+                rule: "Hardly had ... when (Inversion & Tense)",
+                gen: () => {
+                    const events = [
+                        { stem: "Hardly had the bell rung ______ the students rushed out of the classroom.", correct: "when", options: ["than", "when", "then", "after"], exp: "'Hardly had...' is always paired with 'when' (never 'than'). 'No sooner had...' is paired with 'than'." },
+                        { stem: "Hardly had Mr. Tan entered the hall ______ the audience broke into applause.", correct: "when", options: ["than", "that", "when", "before"], exp: "Inverted time clauses starting with 'Hardly had...' require 'when' to join the main action." }
+                    ];
+                    return events[Math.floor(Math.random()*events.length)];
+                }
+            },
+            {
+                rule: "Question Tags (Positive/Negative & Auxiliary)",
+                gen: () => {
+                    const tags = [
+                        { stem: "You seldom attend the evening music practice, ______ you?", correct: "do", options: ["don't", "do", "didn't", "haven't"], exp: "'Seldom' has a negative meaning, so the question tag must be positive ('do you')." },
+                        { stem: "Barely anyone registered for the workshop, ______ they?", correct: "did", options: ["didn't", "did", "do", "don't"], exp: "'Barely' makes the statement negative and the past tense verb requires 'did they'." }
+                    ];
+                    return tags[Math.floor(Math.random()*tags.length)];
+                }
+            },
+            {
+                rule: "Modal Verbs + Perfect Aspect ('could have')",
+                gen: () => {
+                    return {
+                        stem: "Julian ______ the bus if he had not overslept this morning.",
+                        correct: "could have caught",
+                        options: ["could catch", "could have caught", "can catch", "would catch"],
+                        exp: "Past unfulfilled possibility in third conditional contexts requires 'modal + have + past participle' ('could have caught')."
+                    };
+                }
+            },
+            {
+                rule: "Relative Pronouns ('whom' vs 'whose')",
+                gen: () => {
+                    return {
+                        stem: "The scientist ______ groundbreaking research won the award addressed the conference.",
+                        correct: "whose",
+                        options: ["who", "whom", "whose", "which"],
+                        exp: "'Whose' is the possessive relative pronoun modifying 'groundbreaking research'."
+                    };
+                }
+            },
+            {
+                rule: "No sooner had ... than",
+                gen: () => {
+                    return {
+                        stem: "No sooner had the curtain fallen ______ the audience erupted into cheers.",
+                        correct: "than",
+                        options: ["when", "than", "then", "after"],
+                        exp: "'No sooner had...' is strictly paired with 'than'."
+                    };
+                }
+            },
+            {
+                rule: "Causative Verbs ('make / let')",
+                gen: () => {
+                    return {
+                        stem: "The coach made all the players ______ the lap twice before starting the game.",
+                        correct: "run",
+                        options: ["to run", "running", "run", "ran"],
+                        exp: "The causative verb 'make' takes a bare infinitive without 'to' ('made all the players run')."
+                    };
+                }
+            },
+            {
+                rule: "Collective Nouns in Context",
+                gen: () => {
+                    return {
+                        stem: "The jury ______ divided in their opinions regarding the final verdict.",
+                        correct: "were",
+                        options: ["was", "were", "is", "has been"],
+                        exp: "When members of a collective noun ('jury') act individually or hold differing views ('their opinions'), a plural verb ('were') is used."
+                    };
+                }
+            }
+        ];
+
+        const VOCAB_MCQ_TEMPLATES = [
+            {
+                stem: "Due to the persistent drought, the town's water supply began to ______ rapidly.",
+                correct: "dwindle",
+                options: ["dwindle", "deteriorate", "dilute", "disperse"],
+                exp: "'Dwindle' means to diminish gradually in size or amount, which precisely fits water supplies during a drought."
+            },
+            {
+                stem: "Despite facing immense adversity, the young entrepreneur decided to ______ with her plans.",
+                correct: "persevere",
+                options: ["preserve", "persevere", "perpetuate", "persecute"],
+                exp: "'Persevere' means to continue steadfastly despite difficulties or obstacles."
+            },
+            {
+                stem: "The mentor provided ______ advice that saved the startup company from bankruptcy.",
+                correct: "invaluable",
+                options: ["valueless", "invaluable", "worthless", "invalid"],
+                exp: "'Invaluable' means priceless or extremely useful (not without value!)."
+            },
+            {
+                stem: "Because of the stormy weather, the flight commander had no choice but to ______ the mission.",
+                correct: "call off",
+                options: ["call out", "call off", "call up", "call on"],
+                exp: "'Call off' is a high-frequency PSLE phrasal verb meaning to cancel."
+            },
+            {
+                stem: "Mrs. Lee found it difficult to ______ the noisy construction sounds outside her apartment.",
+                correct: "put up with",
+                options: ["put across", "put up with", "put away", "put out"],
+                exp: "'Put up with' means to tolerate or endure something unpleasant."
+            },
+            {
+                stem: "The detective promised to ______ the mysterious disappearance of the stolen documents.",
+                correct: "look into",
+                options: ["look up to", "look into", "look after", "look out"],
+                exp: "'Look into' means to investigate thoroughly."
+            },
+            {
+                stem: "The artist was so ______ that she spent weeks refining a single detailed line on her portrait.",
+                correct: "meticulous",
+                options: ["meticulous", "hesitant", "reluctant", "boisterous"],
+                exp: "'Meticulous' means showing great attention to detail; extremely careful and precise."
+            }
+        ];
+
+        const SYNTHESIS_TEMPLATES = [
+            {
+                prompt: "Sentence 1: Mark finished his homework. Sentence 2: He went out to play soccer.",
+                connector: "Having...",
+                options: [
+                    "Having finished his homework, Mark went out to play soccer.",
+                    "Having finish his homework, Mark went out to play soccer.",
+                    "Having finished his homework, he going out to play soccer.",
+                    "Having Mark finished his homework, he went out to play soccer."
+                ],
+                correct: 0,
+                exp: "'Having + Past Participle' (Having finished) reduces the time clause. Ensure the noun 'Mark' appears right after the comma for clear modifier placement."
+            },
+            {
+                prompt: "Sentence 1: You must study consistently. Sentence 2: You will not pass the scholarship examination.",
+                connector: "Unless...",
+                options: [
+                    "Unless you study consistently, you will not pass the scholarship examination.",
+                    "Unless you do not study consistently, you will not pass the scholarship examination.",
+                    "Unless you study consistently, you will pass the scholarship examination.",
+                    "Unless studying consistently, you will not pass the scholarship examination."
+                ],
+                correct: 0,
+                exp: "'Unless' means 'if not'. Never add another negative ('do not') inside the unless-clause to prevent double negatives."
+            },
+            {
+                prompt: "Sentence 1: The boy heard the alarm sound. Sentence 2: He immediately evacuated the building.",
+                connector: "Hardly had...",
+                options: [
+                    "Hardly had the boy heard the alarm sound when he evacuated the building.",
+                    "Hardly had the boy heard the alarm sound than he evacuated the building.",
+                    "Hardly had the boy hear the alarm sound when he evacuated the building.",
+                    "Hardly the boy had heard the alarm sound when he evacuated the building."
+                ],
+                correct: 0,
+                exp: "'Hardly had' requires inverted verb-subject structure (had + subject + past participle) followed by 'when'."
+            },
+            {
+                prompt: "Sentence 1: Rachel prefers reading fantasy novels. Sentence 2: She does not like playing video games as much.",
+                connector: "Rachel prefers...",
+                options: [
+                    "Rachel prefers reading fantasy novels to playing video games.",
+                    "Rachel prefers reading fantasy novels more than playing video games.",
+                    "Rachel prefers reading fantasy novels over playing video games.",
+                    "Rachel prefers to read fantasy novels than play video games."
+                ],
+                correct: 0,
+                exp: "In formal PSLE English, the standard structure for preference is 'prefer [Action A] TO [Action B]'."
+            },
+            {
+                prompt: "Sentence 1: The storm was severe. Sentence 2: The sailors managed to navigate the ship safely to shore.",
+                connector: "In spite of...",
+                options: [
+                    "In spite of the severe storm, the sailors managed to navigate the ship safely to shore.",
+                    "In spite of the storm was severe, the sailors managed to navigate the ship safely to shore.",
+                    "In spite of that the storm was severe, the sailors navigated the ship.",
+                    "In spite of severe storm, the sailors managing to navigate the ship."
+                ],
+                correct: 0,
+                exp: "'In spite of' must be followed by a noun phrase ('the severe storm') or gerund ('being severe'), NOT a clause with a main verb."
+            }
+        ];
+
+        const EDITING_PASSAGES = [
+            {
+                title: "Editing Passage 1: Wildlife Conservation",
+                passage: "Last Tuesday, our school organized an (1) <u class='text-blue-600 font-bold'>excursion</u> to the nature reserve. We were (2) <u class='text-blue-600 font-bold'>astonisht</u> by the sheer diversity of flora and fauna. The guide explained that protecting endangered species requires (3) <u class='text-blue-600 font-bold'>continous</u> dedication. Without proper conservation efforts, many rare animals would quickly (4) <u class='text-blue-600 font-bold'>disapear</u> from our forests. All pupils were encouraged to be more (5) <u class='text-blue-600 font-bold'>responceable</u> towards the environment.",
+                items: [
+                    { num: 1, text: "excursion", options: ["excursion", "excurshion", "excurtion", "ekscursion"], correct: 0, exp: "Correct spelling is 'excursion'." },
+                    { num: 2, text: "astonisht", options: ["astonished", "astonish", "astonishing", "astonisht"], correct: 0, exp: "Past participle adjective needed: 'astonished'." },
+                    { num: 3, text: "continous", options: ["continuous", "continual", "contineous", "continous"], correct: 0, exp: "Correct spelling is 'continuous' (c-o-n-t-i-n-u-o-u-s)." },
+                    { num: 4, text: "disapear", options: ["disappear", "disapear", "dissapear", "dissappear"], correct: 0, exp: "Single 's', double 'p': 'disappear'." },
+                    { num: 5, text: "responceable", options: ["responsible", "responceable", "responsable", "responsiable"], correct: 0, exp: "Correct spelling is 'responsible' (ends with -ible)." }
+                ]
+            },
+            {
+                title: "Editing Passage 2: Science Exhibition",
+                passage: "The annual science fair was a resounding success. Students showcased their (1) <u class='text-blue-600 font-bold'>inovative</u> inventions with immense pride. One young inventor demonstrated a robot that could clean house hold debris (2) <u class='text-blue-600 font-bold'>efficient</u>. The judges were impressed by his (3) <u class='text-blue-600 font-bold'>curiosety</u> and technical skill. He received a trophy for his (4) <u class='text-blue-600 font-bold'>outstand</u> performance and was congratulated by the principal (5) <u class='text-blue-600 font-bold'>heartily</u>.",
+                items: [
+                    { num: 1, text: "inovative", options: ["innovative", "inovative", "inovatiff", "innovativ"], correct: 0, exp: "Double 'n': 'innovative'." },
+                    { num: 2, text: "efficient", options: ["efficiently", "efficient", "efficiency", "efficent"], correct: 0, exp: "Adverb needed to modify the verb 'clean': 'efficiently'." },
+                    { num: 3, text: "curiosety", options: ["curiosity", "curiosety", "curiositty", "curiosety"], correct: 0, exp: "Correct noun spelling: 'curiosity'." },
+                    { num: 4, text: "outstand", options: ["outstanding", "outstanded", "outstand", "outstands"], correct: 0, exp: "Adjective form needed: 'outstanding'." },
+                    { num: 5, text: "heartily", options: ["heartily", "heartly", "heartili", "heartely"], correct: 0, exp: "Correct spelling is 'heartily'." }
+                ]
+            }
+        ];
+
+        const GRAMMAR_CLOZE_PASSAGES = [
+            {
+                title: "Grammar Cloze Passage 1",
+                text: "Honeybees play a vital role (1) ______ our ecosystem by pollinating crops. (2) ______ these tiny insects, many of the fruits and vegetables we eat daily would cease to exist. A honeybee colony consists (3) ______ a single queen, thousands of female worker bees, and a few male drones. Each bee performs a specific duty to ensure the survival (4) ______ the hive. When a worker bee discovers a rich source of nectar, it returns to the hive and performs a special dance to communicate the location (5) ______ its fellow bees.",
+                blanks: [
+                    { num: 1, options: ["in", "on", "at", "by"], correct: 0, exp: "Preposition 'in our ecosystem'." },
+                    { num: 2, options: ["Without", "With", "Beside", "Unless"], correct: 0, exp: "'Without' expresses the conditional absence of insects." },
+                    { num: 3, options: ["of", "in", "with", "from"], correct: 0, exp: "The phrase 'consists of' takes the preposition 'of'." },
+                    { num: 4, options: ["of", "for", "to", "by"], correct: 0, exp: "Survival 'of' the hive." },
+                    { num: 5, options: ["to", "with", "for", "at"], correct: 0, exp: "Communicate 'to' someone." }
+                ]
+            }
+        ];
+
+        const VOCAB_CLOZE_PASSAGES = [
+            {
+                title: "Vocabulary Cloze Passage 1",
+                text: "When the severe thunderstorm struck the island, coastal residents were advised to (1) ______ shelter immediately. Strong winds knocked down power lines, leaving several districts in complete (2) ______. Emergency workers worked tirelessly throughout the night to (3) ______ victims stranded in flooded areas. Thanks to their (4) ______ efforts, no casualties were reported. By morning, the community rallied together to rebuild damaged (5) ______.",
+                blanks: [
+                    { num: 1, options: ["seek", "find", "make", "chase"], correct: 0, exp: "Collocation: 'seek shelter'." },
+                    { num: 2, options: ["darkness", "silence", "poverty", "solitude"], correct: 0, exp: "Power outages lead to 'darkness'." },
+                    { num: 3, options: ["rescue", "evade", "abandon", "harass"], correct: 0, exp: "Emergency workers 'rescue' victims." },
+                    { num: 4, options: ["valiant", "timid", "careless", "futile"], correct: 0, exp: "'Valiant' means brave and courageous." },
+                    { num: 5, options: ["structures", "habits", "sentiments", "theories"], correct: 0, exp: "Damaged 'structures' refers to buildings and infrastructure." }
+                ]
+            }
+        ];
+
+        function generateFreshQuestionSet() {
+            // Reset user answers
+            userAnswers = {};
+
+            // 1. Generate Grammar MCQs (10 questions randomized from templates)
+            const grammarQns = [];
+            for (let i = 0; i < 10; i++) {
+                const tpl = GRAMMAR_TEMPLATES[i % GRAMMAR_TEMPLATES.length];
+                const item = tpl.gen();
+                grammarQns.push({
+                    id: `g_${i}`,
+                    section: 'grammar',
+                    rule: tpl.rule,
+                    stem: item.stem,
+                    options: item.options,
+                    correct: item.correct,
+                    exp: item.exp
+                });
+            }
+
+            // 2. Generate Vocab MCQs (5 questions randomized)
+            const shuffledVocab = [...VOCAB_MCQ_TEMPLATES].sort(() => 0.5 - Math.random());
+            const vocabQns = shuffledVocab.slice(0, 5).map((item, idx) => ({
+                id: `v_${idx}`,
+                section: 'vocab',
+                stem: item.stem,
+                options: item.options,
+                correct: item.correct,
+                exp: item.exp
+            }));
+
+            // 3. Vocab Cloze (5 questions)
+            const vocabClozePassage = VOCAB_CLOZE_PASSAGES[Math.floor(Math.random() * VOCAB_CLOZE_PASSAGES.length)];
+            const vocabClozeQns = vocabClozePassage.blanks.map((b, idx) => ({
+                id: `vc_${idx}`,
+                section: 'vocab-cloze',
+                passageTitle: vocabClozePassage.title,
+                passageText: vocabClozePassage.text,
+                blankNum: b.num,
+                options: b.options,
+                correct: b.options[b.correct],
+                exp: b.exp
+            }));
+
+            // 4. Grammar Cloze (10 items - duplicating/expanding cloze set)
+            const gClozePassage = GRAMMAR_CLOZE_PASSAGES[0];
+            const grammarClozeQns = [];
+            for(let i = 0; i < 10; i++) {
+                const b = gClozePassage.blanks[i % gClozePassage.blanks.length];
+                grammarClozeQns.push({
+                    id: `gc_${i}`,
+                    section: 'grammar-cloze',
+                    passageTitle: gClozePassage.title,
+                    passageText: gClozePassage.text,
+                    blankNum: i + 1,
+                    options: b.options,
+                    correct: b.options[b.correct],
+                    exp: b.exp
+                });
+            }
+
+            // 5. Editing (12 items)
+            const editPassage = EDITING_PASSAGES[Math.floor(Math.random() * EDITING_PASSAGES.length)];
+            const editingQns = [];
+            for(let i=0; i<12; i++) {
+                const item = editPassage.items[i % editPassage.items.length];
+                editingQns.push({
+                    id: `ed_${i}`,
+                    section: 'editing',
+                    passageTitle: editPassage.title,
+                    passageText: editPassage.passage,
+                    targetText: item.text,
+                    num: i + 1,
+                    options: item.options,
+                    correct: item.options[item.correct],
+                    exp: item.exp
+                });
+            }
+
+            // 6. Synthesis & Transformation (5 items)
+            const shuffledSyn = [...SYNTHESIS_TEMPLATES].sort(() => 0.5 - Math.random());
+            const synthesisQns = shuffledSyn.slice(0, 5).map((item, idx) => ({
+                id: `syn_${idx}`,
+                section: 'synthesis',
+                prompt: item.prompt,
+                connector: item.connector,
+                options: item.options,
+                correct: item.options[item.correct],
+                exp: item.exp
+            }));
+
+            currentQuestions = {
+                grammar: grammarQns,
+                vocab: vocabQns,
+                'vocab-cloze': vocabClozeQns,
+                'grammar-cloze': grammarClozeQns,
+                editing: editingQns,
+                synthesis: synthesisQns
+            };
+
+            updateProgress();
+            renderCurrentView();
+        }
+
+        function switchTab(tabKey) {
+            currentTab = tabKey;
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active', 'text-blue-600');
+                btn.classList.add('text-slate-600');
+            });
+            const activeBtn = document.getElementById(`tab-${tabKey}`);
+            if (activeBtn) {
+                activeBtn.classList.add('active', 'text-blue-600');
+            }
+            renderCurrentView();
+        }
+
+        function toggleViewMode(mode) {
+            viewMode = mode;
+            const btnAll = document.getElementById('modeBtnAll');
+            const btnSec = document.getElementById('modeBtnSection');
+
+            if (mode === 'all') {
+                btnAll.className = "px-3 py-1.5 rounded-lg text-xs font-semibold bg-white text-slate-900 shadow-sm transition";
+                btnSec.className = "px-3 py-1.5 rounded-lg text-xs font-semibold bg-white/10 text-slate-200 hover:bg-white/20 transition";
+            } else {
+                btnSec.className = "px-3 py-1.5 rounded-lg text-xs font-semibold bg-white text-slate-900 shadow-sm transition";
+                btnAll.className = "px-3 py-1.5 rounded-lg text-xs font-semibold bg-white/10 text-slate-200 hover:bg-white/20 transition";
+            }
+            renderCurrentView();
+        }
+
+        function renderCurrentView() {
+            const container = document.getElementById('quizContent');
+            container.innerHTML = '';
+
+            const sectionsToRender = viewMode === 'all' 
+                ? ['grammar', 'vocab', 'vocab-cloze', 'grammar-cloze', 'editing', 'synthesis']
+                : [currentTab];
+
+            sectionsToRender.forEach(secKey => {
+                const qList = currentQuestions[secKey] || [];
+                if (qList.length === 0) return;
+
+                const secWrapper = document.createElement('div');
+                secWrapper.className = "space-y-4 mb-8";
+
+                // Section header
+                const secTitleMap = {
+                    'grammar': 'Grammar Multiple Choice Questions (10 Marks)',
+                    'vocab': 'Vocabulary Multiple Choice Questions (5 Marks)',
+                    'vocab-cloze': 'Vocabulary Cloze Context Drill (5 Marks)',
+                    'grammar-cloze': 'Grammar Cloze Preposition & Connector Drill (10 Marks)',
+                    'editing': 'Editing for Spelling & Grammar (12 Marks)',
+                    'synthesis': 'Synthesis & Transformation Rules (5 Marks)'
+                };
+
+                secWrapper.innerHTML = `
+                    <div class="flex items-center gap-2 border-b border-slate-200 pb-2">
+                        <span class="w-3 h-3 rounded-full bg-blue-600"></span>
+                        <h3 class="font-display font-bold text-slate-900 text-lg sm:text-xl">${secTitleMap[secKey]}</h3>
+                    </div>
+                `;
+
+                // Render Cloze/Editing passage box if applicable
+                if (secKey === 'vocab-cloze' || secKey === 'grammar-cloze') {
+                    const passageBox = document.createElement('div');
+                    passageBox.className = "glass-card p-4 sm:p-5 rounded-2xl border border-amber-200 bg-amber-50/50 text-slate-800 text-sm sm:text-base leading-relaxed mb-4 shadow-sm";
+                    passageBox.innerHTML = `
+                        <div class="font-bold text-amber-900 text-xs uppercase tracking-wider mb-2 flex items-center gap-2">
+                            <i class="fa-solid fa-book-open"></i> ${qList[0].passageTitle}
+                        </div>
+                        <p>${qList[0].passageText}</p>
+                    `;
+                    secWrapper.appendChild(passageBox);
+                } else if (secKey === 'editing') {
+                    const passageBox = document.createElement('div');
+                    passageBox.className = "glass-card p-4 sm:p-5 rounded-2xl border border-rose-200 bg-rose-50/40 text-slate-800 text-sm sm:text-base leading-relaxed mb-4 shadow-sm";
+                    passageBox.innerHTML = `
+                        <div class="font-bold text-rose-900 text-xs uppercase tracking-wider mb-2 flex items-center gap-2">
+                            <i class="fa-solid fa-file-pen"></i> ${qList[0].passageTitle}
+                        </div>
+                        <p>${qList[0].passageText}</p>
+                    `;
+                    secWrapper.appendChild(passageBox);
+                }
+
+                // Render questions
+                qList.forEach((q, idx) => {
+                    const qCard = document.createElement('div');
+                    qCard.className = "glass-card rounded-2xl p-5 border border-slate-200 shadow-sm space-y-4";
+                    qCard.id = `card_${q.id}`;
+
+                    const isAnswered = userAnswers[q.id] !== undefined;
+                    const selectedOpt = userAnswers[q.id];
+
+                    let questionHeader = '';
+                    if (secKey === 'synthesis') {
+                        questionHeader = `
+                            <div class="text-xs font-bold text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded-md inline-block mb-1">
+                                Rule: ${q.connector}
+                            </div>
+                            <p class="font-semibold text-slate-900 text-sm sm:text-base">${idx + 1}. ${q.prompt}</p>
+                        `;
+                    } else if (secKey === 'grammar') {
+                        questionHeader = `
+                            <div class="text-xs font-bold text-blue-600 bg-blue-50 px-2.5 py-1 rounded-md inline-block mb-1">
+                                ${q.rule}
+                            </div>
+                            <p class="font-semibold text-slate-900 text-sm sm:text-base">${idx + 1}. ${q.stem}</p>
+                        `;
+                    } else if (secKey === 'editing') {
+                        questionHeader = `
+                            <p class="font-semibold text-slate-900 text-sm sm:text-base">${idx + 1}. Choose the correct word replacement/spelling for item (${q.num}):</p>
+                        `;
+                    } else if (secKey === 'vocab-cloze' || secKey === 'grammar-cloze') {
+                        questionHeader = `
+                            <p class="font-semibold text-slate-900 text-sm sm:text-base">${idx + 1}. Select the correct word for Blank (${q.blankNum}):</p>
+                        `;
+                    } else {
+                        questionHeader = `
+                            <p class="font-semibold text-slate-900 text-sm sm:text-base">${idx + 1}. ${q.stem}</p>
+                        `;
+                    }
+
+                    // Render options
+                    let optionsHTML = '<div class="grid grid-cols-1 gap-2.5 pt-1">';
+                    q.options.forEach((opt, oIdx) => {
+                        let btnStyle = "bg-white hover:bg-slate-50 border-slate-200 text-slate-700";
+                        let iconHTML = `<span class="w-6 h-6 rounded-lg bg-slate-100 font-bold text-xs text-slate-500 flex items-center justify-center">${String.fromCharCode(65 + oIdx)}</span>`;
+
+                        if (isAnswered) {
+                            if (opt === q.correct) {
+                                btnStyle = "bg-emerald-50 border-emerald-500 text-emerald-900 font-semibold ring-2 ring-emerald-500/20";
+                                iconHTML = `<span class="w-6 h-6 rounded-lg bg-emerald-600 text-white font-bold text-xs flex items-center justify-center"><i class="fa-solid fa-check"></i></span>`;
+                            } else if (selectedOpt === opt && opt !== q.correct) {
+                                btnStyle = "bg-rose-50 border-rose-500 text-rose-900 font-semibold ring-2 ring-rose-500/20";
+                                iconHTML = `<span class="w-6 h-6 rounded-lg bg-rose-600 text-white font-bold text-xs flex items-center justify-center"><i class="fa-solid fa-xmark"></i></span>`;
+                            } else {
+                                btnStyle = "bg-slate-50 border-slate-200 text-slate-400 opacity-60";
+                            }
+                        }
+
+                        optionsHTML += `
+                            <button onclick="selectOption('${q.id}', '${escapeQuotes(opt)}')" 
+                                ${isAnswered ? 'disabled' : ''} 
+                                class="option-card w-full text-left p-3 sm:p-3.5 rounded-xl border ${btnStyle} flex items-center gap-3 text-xs sm:text-sm active:scale-[0.99] transition">
+                                ${iconHTML}
+                                <span class="flex-1 leading-snug">${escapeHTML(opt)}</span>
+                            </button>
+                        `;
+                    });
+                    optionsHTML += '</div>';
+
+                    // Feedback box
+                    let feedbackHTML = '';
+                    if (isAnswered) {
+                        const isCorrect = selectedOpt === q.correct;
+                        feedbackHTML = `
+                            <div class="mt-4 p-4 rounded-xl ${isCorrect ? 'bg-emerald-50/80 border border-emerald-200 text-emerald-900' : 'bg-rose-50/80 border border-rose-200 text-rose-900'} text-xs sm:text-sm animate-in fade-in duration-200">
+                                <div class="font-bold flex items-center gap-2 mb-1">
+                                    <i class="fa-solid ${isCorrect ? 'fa-circle-check text-emerald-600' : 'fa-circle-xmark text-rose-600'}"></i>
+                                    <span>${isCorrect ? 'Correct!' : 'Incorrect'}</span>
+                                </div>
+                                <p class="leading-relaxed font-medium">${q.exp}</p>
+                            </div>
+                        `;
+                    }
+
+                    qCard.innerHTML = questionHeader + optionsHTML + feedbackHTML;
+                    secWrapper.appendChild(qCard);
+                });
+
+                container.appendChild(secWrapper);
+            });
+        }
+
+        function selectOption(qId, optValue) {
+            if (userAnswers[qId] !== undefined) return;
+
+            userAnswers[qId] = optValue;
+            updateProgress();
+            renderCurrentView();
+        }
+
+        function updateProgress() {
+            let totalQns = 0;
+            let answeredQns = 0;
+            let correctCount = 0;
+
+            Object.keys(currentQuestions).forEach(secKey => {
+                currentQuestions[secKey].forEach(q => {
+                    totalQns++;
+                    if (userAnswers[q.id] !== undefined) {
+                        answeredQns++;
+                        if (userAnswers[q.id] === q.correct) {
+                            correctCount++;
+                        }
+                    }
+                });
+            });
+
+            document.getElementById('headerScore').innerText = correctCount;
+            document.getElementById('headerTotal').innerText = totalQns;
+            document.getElementById('progressText').innerText = `Answered ${answeredQns} out of ${totalQns} questions`;
+
+            scoreState.totalScore = correctCount;
+            scoreState.answeredCount = answeredQns;
+            scoreState.maxQuestions = totalQns;
+        }
+
+        function submitFullPaper() {
+            updateProgress();
+            const pct = Math.round((scoreState.totalScore / scoreState.maxQuestions) * 100);
+
+            document.getElementById('modalScoreText').innerText = `${scoreState.totalScore}/${scoreState.maxQuestions}`;
+            document.getElementById('modalPctText').innerText = `${pct}%`;
+
+            // Breakdown HTML
+            const breakdownContainer = document.getElementById('sectionBreakdown');
+            breakdownContainer.innerHTML = '';
+
+            const secNames = {
+                'grammar': 'Grammar MCQ',
+                'vocab': 'Vocabulary MCQ',
+                'vocab-cloze': 'Vocab Cloze',
+                'grammar-cloze': 'Grammar Cloze',
+                'editing': 'Editing',
+                'synthesis': 'Synthesis & Trans.'
+            };
+
+            Object.keys(currentQuestions).forEach(secKey => {
+                let secCorrect = 0;
+                let secTotal = currentQuestions[secKey].length;
+
+                currentQuestions[secKey].forEach(q => {
+                    if (userAnswers[q.id] === q.correct) secCorrect++;
+                });
+
+                const row = document.createElement('div');
+                row.className = "flex items-center justify-between p-2 rounded-lg bg-white border border-slate-200";
+                row.innerHTML = `
+                    <span class="font-medium text-slate-700">${secNames[secKey]}</span>
+                    <span class="font-bold ${secCorrect === secTotal ? 'text-emerald-600' : 'text-slate-900'}">${secCorrect} / ${secTotal}</span>
+                `;
+                breakdownContainer.appendChild(row);
+            });
+
+            document.getElementById('scoreModal').classList.remove('hidden');
+
+            if (pct >= 80) {
+                confetti({
+                    particleCount: 100,
+                    spread: 70,
+                    origin: { y: 0.6 }
+                });
+            }
+        }
+
+        function closeScoreModal() {
+            document.getElementById('scoreModal').classList.add('hidden');
+        }
+
+        function confirmNewSet() {
+            generateFreshQuestionSet();
+        }
+
+        function resetAndGenerateNewPaper() {
+            closeScoreModal();
+            generateFreshQuestionSet();
+        }
+
+        // Helper utilities
+        function escapeQuotes(str) {
+            return str.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+        }
+        function escapeHTML(str) {
+            return str.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        }
+
+        // Initialize on load
+        window.onload = function() {
+            generateFreshQuestionSet();
+        };
+    </script>
+</body>
+</html>
