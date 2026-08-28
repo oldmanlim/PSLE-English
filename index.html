@@ -30,28 +30,7 @@
         .review-item { padding: 10px; border-bottom: 1px solid #edf2f7; font-size: 0.85rem; }
     </style>
 </head>
-    <!-- Visitor Counter Display -->
-<div style="margin-top: 20px; font-size: 0.8rem; color: #a0aec0;">
-    Visitors: <span id="count">Loading...</span>
-</div>
-
-<script>
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbxCiQ0k_9kKeGkvBVYiSHUBP_BrwebSnfxg_5_STWl3d0SZQXtMldDEULJQpF-LsAwr1w/exec';
-
-    async function updateCounter() {
-        try {
-            const response = await fetch(scriptURL);
-            const data = await response.json();
-            document.getElementById('count').innerText = data.visitorCount;
-        } catch (error) {
-            console.error('Error fetching visitor count:', error);
-            document.getElementById('count').innerText = '---';
-        }
-    }
-
-    // Call the function when the page loads
-    window.onload = updateCounter;
-</script>
+    
 <body>
 
 <div class="quiz-card">
@@ -12153,4 +12132,26 @@
     window.onload = generateNewSet;
 </script>
 </body>
+    <!-- Visitor Counter Display -->
+<div style="margin-top: 20px; font-size: 0.8rem; color: #a0aec0;">
+    Visitors: <span id="count">Loading...</span>
+</div>
+
+<script>
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbxCiQ0k_9kKeGkvBVYiSHUBP_BrwebSnfxg_5_STWl3d0SZQXtMldDEULJQpF-LsAwr1w/exec';
+
+    async function updateCounter() {
+        try {
+            const response = await fetch(scriptURL);
+            const data = await response.json();
+            document.getElementById('count').innerText = data.visitorCount;
+        } catch (error) {
+            console.error('Error fetching visitor count:', error);
+            document.getElementById('count').innerText = '---';
+        }
+    }
+
+    // Call the function when the page loads
+    window.onload = updateCounter;
+</script>
 </html>
