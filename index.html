@@ -37,7 +37,7 @@
     <div id="quiz-ui">
         <div class="header">
             <h3 style="margin:0">PSLE English Mastery</h3>
-            <p id="q-counter" style="color:#718096; font-size:0.8rem; margin:5px 0 0 0;">Bitesize Session (10 Qns)</p>
+            <p id="q-counter" style="color:#718096; font-size:0.8rem; margin:5px 0 0 0;">Bitesize Session (12 Qns)</p>
         </div>
         <div class="prog-bg"><div class="prog-fill" id="prog-bar"></div></div>
 
@@ -56,6 +56,8 @@
     <div id="result-ui" class="result-screen">
         <h2>Session Complete!</h2>
         <div class="score-circle" id="final-score">0/12</div>
+        <!-- Add this timestamp container -->
+    <p id="timestamp" style="font-size: 0.8rem; color: #718096;"></p>
         <p id="result-msg">Keep it up!</p>
         <button class="main-btn confirm" onclick="generateNewSet()">Generate Next 12 Questions</button>
         <div class="review-list" id="review-list"></div>
@@ -23003,6 +23005,16 @@
         document.getElementById('quiz-ui').style.display = 'none';
         document.getElementById('result-ui').style.display = 'block';
         document.getElementById('final-score').innerText = `${score} / 12`;
+
+        // Generate Timestamp
+    const now = new Date();
+    const formattedDate = now.toLocaleDateString('en-SG', { 
+        day: 'numeric', month: 'short', year: 'numeric' 
+    });
+    const formattedTime = now.toLocaleTimeString('en-SG', { 
+        hour: '2-digit', minute: '2-digit' 
+    });
+    document.getElementById('timestamp').innerText = `Completed on ${formattedDate} at ${formattedTime}`;
         
         const list = document.getElementById('review-list');
         list.innerHTML = '<h4>Review:</h4>';
